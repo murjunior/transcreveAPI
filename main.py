@@ -1,5 +1,5 @@
-# transcreveAPI/main.py
 from flask import Flask, request
+from flask_cors import CORS
 import speech_recognition as sr
 from pydub import AudioSegment
 import io
@@ -7,6 +7,8 @@ import logging
 from datetime import datetime
 
 app = Flask(__name__)
+
+CORS(app, origins="https://seu-site.com.br")
 
 # Configuração do logging
 logging.basicConfig(
@@ -17,7 +19,7 @@ logging.basicConfig(
 
 @app.route('/', methods=['GET'])
 def home():
-    return '<center><h1>[POST] /transcrever with "audio" form file (wav, ogg, mp3)</h1></center>'
+    return '{"message":"Forbidden"}'
 
 @app.route('/transcrever', methods=['POST'])
 def transcrever():
@@ -32,21 +34,14 @@ def transcrever():
         logging.error(f"{request_time} - Arquivo de áudio inválido.")
         return 'Arquivo de áudio inválido', 400
 
-    # Verifique o tipo de conteúdo do arquivo de áudio
-    content_type = audio_file.content_type
-    if content_type not in ['audio/wav', 'audio/wave', 'audio/x-wav', 'audio/ogg', 'audio/mp3']:
-        logging.error(f"{request_time} - Tipo de arquivo não suportado: {content_type}")
-        return {'erro': 'Apenas arquivos WAV, OGG e MP3 são permitidos'}, 400
-
+    # Converte qualquer arquivo de áudio para WAV
     try:
-        # Converta o arquivo para WAV se necessário
-        if content_type in ['audio/ogg', 'audio/mp3']:
-            audio = AudioSegment.from_file(io.BytesIO(audio_file.read()), format=content_type.split('/')[1])
-            audio = audio.set_frame_rate(16000).set_channels(1)  # Ajuste a taxa de amostragem e canais conforme necessário
-            wav_io = io.BytesIO()
-            audio.export(wav_io, format='wav')
-            wav_io.seek(0)
-            audio_file = wav_io
+        audio = AudioSegment.from_file(io.BytesIO(audio_file.read()))
+        audio = audio.set_frame_rate(22050).set_channels(1)  # Ajuste conforme necessário
+        wav_io = io.BytesIO()
+        audio.export(wav_io, format='wav')
+        wav_io.seek(0)
+        audio_file = wav_io
 
         # Inicializa o reconhecedor de fala
         recognizer = sr.Recognizer()

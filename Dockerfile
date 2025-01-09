@@ -7,6 +7,7 @@ RUN apk add --no-cache git ffmpeg build-base
 COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt --target=/transcreve-api/venv
+RUN pip install flask-cors==4.0.2
 
 FROM python:3.11-alpine
 
