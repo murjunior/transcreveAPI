@@ -2,7 +2,7 @@
 
 # Variáveis para o domínio e as configurações do backend
 backend_hostname="seudominio.com.br"
-backend_port="5000"  # Altere para a porta correta do seu backend
+backend_port="5444"  # Altere para a porta correta do seu backend
 email_cert="seu@email.com" # Email para o certificado
 
 # Criação do arquivo de configuração do Nginx para o domínio
