@@ -41,7 +41,12 @@ docker build -t transcreve-api:1.0 .
 > [!WARNING]
 > Nesta etapa já estamos assumindo que você tenha o docker rodando em sua máquina.
 
-### 5. Criar dominio no Nginx e solicitar SSL para o dominio da API
+### 5. Criar o container no docker com a imagem que acabou de criar
+```
+docker run -d -p 5000:5000 --name transcreve-api transcreve-api:1.0
+```
+
+### 6. Criar dominio no Nginx e solicitar SSL para o dominio da API
 
 a. Entrar na pasta que subiu na VPS
 ```
@@ -56,7 +61,7 @@ c. Executar o script
 ./tcr.sh
 ```
 
-### 6. Por fim só realizar a alteração no seu código para que ele envie o audio para a API e realize a transcrição.
+### 7. Por fim só realizar a alteração no seu código para que ele envie o audio para a API e realize a transcrição.
 
 
 ## Contribuindo
