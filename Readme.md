@@ -1,22 +1,5 @@
 # API de Transcrição de Áudio para Texto
-
-Uma API simples criada com Python Flask e a biblioteca SpeechRecognition para transcrever arquivos de áudio em texto.
-
-## Uso
-
-### Requisitos
-
-Antes de usar a API, certifique-se de ter instalado as dependências do projeto usando o seguinte comando:
-
-```pip install -r requirements.txt```
-
-**Também instale o FFMPEG!**
-
-### Endpoint
-
-A API possui um único endpoint em `/transcrever`, que pode ser usado para enviar arquivos de áudio para transcrição.
-
-Para enviar um arquivo de áudio para transcrição, faça uma solicitação HTTP POST para o endpoint `/transcrever` com o arquivo de áudio como dados do formulário multipart.
+Uma API simples criada com Python Flask e a biblioteca SpeechRecognition para transcrever arquivos de áudio em texto. A API possui um único endpoint em `/transcrever`, que pode ser usado para enviar arquivos de áudio para transcrição.
 
 Por exemplo, usando o comando `curl` no terminal:
 
@@ -25,35 +8,56 @@ curl -X POST -F 'audio=@/path/to/audio.wav' http://localhost:5000/transcrever
 ```
 
 
-ou usando NodeJS Axios:
+## Instalação
+
+### 1. Editar [main.py](https://github.com/murjunior/transcreveAPI/blob/master/main.py) e [tcr.sh](https://github.com/murjunior/transcreveAPI/blob/master/tcr.sh)
+
+Em **main.py**
 ```js
-var axios = require('axios');
-var FormData = require('form-data');
-var fs = require('fs');
-var data = new FormData();
-data.append('audio', fs.createReadStream('@/path/to/audio.wav'));
-
-var config = {
-    method: 'post',
-    maxBodyLength: Infinity,
-    url: 'http://localhost:5000/transcrever',
-    headers: { 
-        ...data.getHeaders()
-    },
-    data : data
-};
-
-axios(config)
-    .then(function (response) {
-        console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
+CORS(app, origins="https://app.seu-frontend.com.br") //Endereço do seu frontend
 ```
 
+Em **tcr.sh**
+```js
+backend_hostname="transcreve-api.seudominio.com.br" //Altere para o endereço que será sua API de transcrição
+backend_port="5444"  //Altere para a porta correta do seu backend
+email_cert="seu@email.com" //Email para o certificado
+```
 
-Isso enviará um arquivo de áudio `audio.wav` localizado em `/path/to/` para o endpoint `/transcrever` da API. Se o arquivo for um arquivo WAV válido, a API transcreverá o áudio em texto e retornará a transcrição como uma resposta HTTP 200 OK. Se o arquivo enviado não for um arquivo válido, a API retornará um JSON com uma mensagem de erro indicando que apenas arquivos WAV, OGG e MP3 são permitidos.
+> [!IMPORTANT]
+> Lembre-se de criar um endereço para sua api de transcrição no CloudFlare e apontar para o ip da sua VPS.
+
+### 2. Depois de <ins>editado os arquivos</ins> do passo 1, envie para a pasta /root da sua VPS.
+
+### 3. Acessa a pasta de onde você enviou os arquivos
+```
+cd /root/transcreveAPI
+```
+
+### 4. Realizar o Build da imagem do container em docker
+```
+docker build -t transcreve-api:1.0 .
+```
+> [!WARNING]
+> Nesta etapa já estamos assumindo que você tenha o docker rodando em sua máquina.
+
+### 5. Criar dominio no Nginx e solicitar SSL para o dominio da API
+
+a. Entrar na pasta que subiu na VPS
+```
+cd /root/transcreveAPI
+```
+b. Dar permissão para execução do script.
+```
+chmod +x tcr.sh
+```
+c. Executar o script
+```
+./tcr.sh
+```
+
+### 6. Por fim só realizar a alteração no seu código para que ele envie o audio para a API e realize a transcrição.
+
 
 ## Contribuindo
 
