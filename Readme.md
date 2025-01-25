@@ -43,7 +43,7 @@ docker build -t transcreve-api:1.0 .
 
 ### 5. Criar o container no docker com a imagem que acabou de criar
 ```
-docker run -d -p 5000:5000 --name transcreve-api transcreve-api:1.0
+docker run -d -p 5444:5444 --name transcreve-api transcreve-api:1.0
 ```
 
 ### 6. Criar dominio no Nginx e solicitar SSL para o dominio da API
