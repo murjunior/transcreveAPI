@@ -30,8 +30,8 @@ COPY --from=builder /transcreve-api /transcreve-api
 ENV PYTHONPATH=/transcreve-api/venv
 ENV PATH=/transcreve-api/venv/bin:$PATH
 
-EXPOSE 5000
+EXPOSE 5444
 
 ENTRYPOINT ["dumb-init", "--"]
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "main:app", "--workers", "4", "--log-level", "info"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "main:app", "--workers", "8", "--log-level", "info"]
