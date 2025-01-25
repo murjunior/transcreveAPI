@@ -34,4 +34,4 @@ EXPOSE 5444
 
 ENTRYPOINT ["dumb-init", "--"]
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "main:app", "--workers", "8", "--log-level", "info"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5444", "main:app", "--workers", "8", "--log-level", "info"]
