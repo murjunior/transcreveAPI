@@ -4,7 +4,7 @@ Uma API simples criada com Python Flask e a biblioteca SpeechRecognition para tr
 Por exemplo, usando o comando `curl` no terminal:
 
 ```
-curl -X POST -F 'audio=@/path/to/audio.wav' http://localhost:5000/transcrever
+curl -X POST -F 'audio=@/path/to/audio.wav' http://localhost:5444/transcrever
 ```
 
 
