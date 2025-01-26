@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 from flask_cors import CORS
 import speech_recognition as sr
 from pydub import AudioSegment
@@ -8,7 +8,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-CORS(app, origins="https://seu-site.com.br")
+CORS(app, origins="https://fe.elevafoco.com.br")
 
 # Configuração do logging
 logging.basicConfig(
@@ -65,3 +65,37 @@ def transcrever():
     except Exception as e:
         logging.error(f"{request_time} - Erro inesperado: {e}")
         return 'Erro interno no servidor', 500
+
+@app.route('/converter', methods=['POST'])
+def converter():
+    request_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    if 'audio' not in request.files:
+        logging.error(f"{request_time} - Nenhum arquivo de áudio enviado para conversão.")
+        return 'Nenhum arquivo de áudio enviado', 400
+
+    audio_file = request.files['audio']
+    if not audio_file:
+        logging.error(f"{request_time} - Arquivo de áudio inválido.")
+        return 'Arquivo de áudio inválido', 400
+
+    try:
+        # Converte qualquer arquivo de áudio para MP3
+        audio = AudioSegment.from_file(io.BytesIO(audio_file.read()))
+        audio = audio.set_frame_rate(22050).set_channels(1)  # Ajuste conforme necessário
+
+        # Gera o nome do arquivo dinâmico baseado na data e hora atual
+        current_time = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+        file_name = f"audio-{current_time}.mp3"
+
+        # Armazenamento do arquivo MP3 na memória
+        mp3_io = io.BytesIO()
+        audio.export(mp3_io, format='mp3')  # Converte para MP3
+        mp3_io.seek(0)  # Volta o ponteiro para o início do buffer
+
+        # Retorna o arquivo convertido como resposta com o nome dinâmico
+        return send_file(mp3_io, mimetype='audio/mp3', as_attachment=True, download_name=file_name)
+
+    except Exception as e:
+        logging.error(f"{request_time} - Erro ao converter o áudio: {e}")
+        return 'Erro ao converter o áudio', 500
