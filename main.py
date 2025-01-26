@@ -8,7 +8,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-CORS(app, origins="https://fe.elevafoco.com.br")
+CORS(app, origins="https://frontend.seudominio.com.br")
 
 # Configuração do logging
 logging.basicConfig(
